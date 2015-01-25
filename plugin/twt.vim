@@ -12,6 +12,39 @@ if v:version < 703
 	finish
 endif
 
+if !has("ruby")
+  echohl ErrorMsg
+  echon "Sorry, the 'Open Twt URL' plugin requires Ruby support."
+  finish
+end
+
+ruby << EOF
+  def twt_url
+    re = %r{twt(\d+): @(\w+)}
+
+    line = VIM::Buffer.current.line
+    urls = line.scan(re).flatten
+
+    if urls.empty?
+      VIM::message("No Tweet ID detected to Open")
+    else
+      url = 'https://twitter.com/' + urls[1] + '/status/' + urls[0]
+      system("open", url)
+      VIM::message('Opening Tweet: ' + url)
+    end
+  end
+EOF
+
+function! s:OpenTwtURL()
+  ruby twt_url
+endfunction
+
+command! -range OpenTwtURL execute '<line1>,<line2>call <SID>OpenTwtURL()'
+
+if !hasmapto('OpenTwtURL')
+	  map <leader>t :OpenTwtURL<CR>
+end
+
 function! MoveSelectedLinesToFile(filename)
 	exec ":cd %:p:h"
 	exec "'<,'>w! >>" . a:filename

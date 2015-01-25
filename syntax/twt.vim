@@ -13,14 +13,17 @@ syn keyword twtType contained TYP
 
 
 " Matches
+syn match twtId 	"twt\d\+"
 syn match twtUrl 	"http\S\+"
 syn match twtUsr 	"@\S\+"
 syn match twtHash 	"#\S\+"
 syn match twtMatchType 	"\[.*\]"
-syn match twtLine 	".*$" contains=twtType,twtMatchType,twtUrl,twtUsr,twtHash
+syn match twtLine 	".*$" contains=twtId,twtType,twtMatchType,twtUrl,twtUsr,twtHash
+
 
 
 " Highlights
+hi def link twtId 		Function
 hi def link twtType 		Title
 hi def link twtMatchType 	Title
 hi def link twtLine 		Type
